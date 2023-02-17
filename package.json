@@ -1,6 +1,6 @@
 {
   "name": "@Tornike-meama/dric-routing",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Dynamic routing for react projects",
   "repository": "https://github.com/Tornike-meama/ds-routing",
 
@@ -21,11 +21,13 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-typescript": "^11.0.0",
     "@types/react": "^18.0.28",
-    "react": "^18.2.0",
     "rollup": "^3.16.0",
     "rollup-plugin-dts": "^5.2.0",
     "tslib": "^2.5.0",
     "typescript": "^4.9.5"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
   },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
