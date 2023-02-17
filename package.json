@@ -5,7 +5,7 @@
   "repository": "https://github.com/Tornike-meama/ds-routing",
 
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/d-dric-routing"
+    "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
     "rollup": "rollup -c"
