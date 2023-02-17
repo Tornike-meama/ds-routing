@@ -5,11 +5,12 @@ import {
   Actions,
   Acceseses,
 } from "types";
+
 export const PermissionsContext = createContext<PermissionContextType>({
   userClaims: [],
 });
 
-function usePersmissions(
+export function usePersmissions(
   moduleKey?: string,
   pageKeys?: Acceseses
 ): UserPermissionReturnType {
