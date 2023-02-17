@@ -1,10 +1,11 @@
 {
-  "name": "@ds/routing",
+  "name": "d-dric-routing",
   "version": "0.0.1",
   "description": "Dynamic routing for react projects",
+  "repository": "https://github.com/Tornike-meama/ds-routing",
 
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/Tornike-meama"
+    "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
     "rollup": "rollup -c"
