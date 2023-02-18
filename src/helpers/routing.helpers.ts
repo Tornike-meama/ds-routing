@@ -1,5 +1,5 @@
 import { DrawerItem, DrawerRoutes, Modules, PageRoutes, RoutesType } from "../types";
-import { generateValidUrlFromName } from "./common.helpers";
+import { generateValidUrlFromName } from './common.helpers';
 
 //routes
 export function getRoutes(allModule: Modules[]) {

@@ -1,5 +1,5 @@
 import React from "react";
-import { PrivteRouteProps } from "../types/wrapper.types";
+import { PrivteRouteProps } from "types";
 import usePersmissions from "../hooks/usePermission.hook";
 
 const PrivateRoute = ({
