@@ -1,6 +1,6 @@
 {
   "name": "@Tornike-meama/dric-routing",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Dynamic routing for react projects",
   "repository": "https://github.com/Tornike-meama/ds-routing",
   "publishConfig": {
