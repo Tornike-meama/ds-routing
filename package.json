@@ -4,7 +4,7 @@
   "description": "Dynamic routing for react projects",
   "repository": "https://github.com/Tornike-meama/ds-routing",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "rollup": "rollup -c"
