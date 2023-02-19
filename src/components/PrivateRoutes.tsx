@@ -2,7 +2,7 @@ import React from "react";
 import { PrivteRouteProps } from "types";
 import usePersmissions from "../hooks/usePermission.hook";
 
-const PrivateRoute = ({
+export const PrivateRoute = ({
   Component,
   UnAuthorizedPage,
   moduleKey,

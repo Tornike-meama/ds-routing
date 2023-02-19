@@ -1,1 +1,1 @@
-export { PermissionsContext, usePersmissions } from "./usePermission.hook";
+export * from "./usePermission.hook";
