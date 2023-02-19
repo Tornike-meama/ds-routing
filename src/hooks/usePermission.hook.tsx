@@ -1,14 +1,15 @@
-import React, { createContext, useContext } from "react";
+import React, { useContext } from "react";
 import {
-  PermissionContextType,
+  // PermissionContextType,
   UserPermissionReturnType,
   Actions,
   Acceseses,
 } from "types";
 
-export const PermissionsContext = createContext<PermissionContextType>({
-  userClaims: [],
-});
+import { PermissionsContext } from "context";
+// export const PermissionsContext = createContext<PermissionContextType>({
+//   userClaims: [],
+// });
 
 export function usePersmissions(
   moduleKey?: string,

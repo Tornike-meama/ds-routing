@@ -2,6 +2,7 @@ export * from "./components";
 export * from "./helpers";
 export * from "./hooks";
 export * from "./types";
+export * from "./context";
 
     // "rollup-plugin-dts": "^5.2.0",
     // "rollup-plugin-peer-deps-external": "^2.2.4",
