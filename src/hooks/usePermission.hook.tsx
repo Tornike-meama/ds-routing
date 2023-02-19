@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext } from "react";
 import {
   PermissionContextType,
   UserPermissionReturnType,
@@ -14,7 +14,7 @@ export function usePersmissions(
   moduleKey?: string,
   pageKeys?: Acceseses
 ): UserPermissionReturnType {
-  const { userClaims } = useContext(PermissionsContext);
+  const { userClaims } = {userClaims: ["test"]}; //useContext(PermissionsContext);
   let actions = {} as Actions;
 
   if (!pageKeys || !moduleKey) {
