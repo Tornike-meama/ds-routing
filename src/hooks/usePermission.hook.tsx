@@ -15,7 +15,8 @@ export function usePersmissions(
   moduleKey?: string,
   pageKeys?: Acceseses
 ): UserPermissionReturnType {
-  const { userClaims } = useContext(PermissionsContext);
+  let userClaims: string[] = [];
+  if(useContext !== null) userClaims = useContext(PermissionsContext)?.userClaims;
   console.log(userClaims, "userClaims from usepermission");
   let actions = {} as Actions;
 
