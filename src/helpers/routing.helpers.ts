@@ -59,7 +59,7 @@ export function getDrawerItems(claims: string[], allModule: Modules[]) {
     //check user access for full module
     moduleItem.childItems = getDrawerItemrecursion(module.subPages, module.moduleKey, `/${module.name}`, claims);
     //if user haven't access full module or any page inside this module not showing in drawer
-    moduleItem.childItems?.length > 0 && acc.push(moduleItem); //TODO: make this better
+    if(moduleItem.childItems?.length > 0) acc.push(moduleItem); //TODO: make this better
     return acc;
   }, []);
 
@@ -103,77 +103,4 @@ export function getDrawerRoutes(claims: string[], allModule: Modules[]): DrawerR
   const routes = getRoutes(allModule);
   const drawer = getDrawerItems(claims, allModule);
   return { routes, drawer };
-}
-
-//accasses
-export const roles = [
-  {
-    name: "Developer_1",
-    roleId: "ea3f4d0a-f1ca-4f91-399a-08da03714fc2",
-    roleName: "Developer",
-    roleClaims: [
-      "ProjectPolicys_ERPModuleModule",
-      "ProjectPolicys_FinancesModule",
-      "ProjectPolicys_OffersModule",
-      "ProjectPolicys_PaymentModule",
-      "ProjectPolicys_CoreModule",
-      "ProjectPolicys_B2BHoreka",
-      "ProjectPolicys_ProductModule",
-      "ProjectPolicys_ECommerceModule",
-      "ProjectPolicys_CustomersModule_CustomerGroupPage_AddGroup",
-      "ProjectPolicys_CustomersModule_CustomerGroupPage_Remove",
-      // "ProjectPolicys_CustomersModule_CustomerPage",
-      "ProjectPolicys_CustomersModule_CommentTagsPage",
-      "ProjectPolicys_CustomersModule_CommentStatusPage",
-      "ProjectPolicys_CustomersModule_CommentPage",
-      "ProjectPolicys_CustomersModule_B2BClientCategoriesPage",
-      "ProjectPolicys_CustomersModule_B2BClientPage",
-      "ProjectPolicys_CustomersModule_B2BClientAddressPage",
-      "ProjectPolicys_CustomersModule_DocumentDraftPage",
-      "ProjectPolicys_CustomersModule_DocumentPage",
-    ],
-    modules: [
-      "ProjectPolicys_B2BHoreka",
-      "ProjectPolicys_CoreModule",
-      "ProjectPolicys_CustomersModule",
-      "ProjectPolicys_ECommerceModule",
-      "ProjectPolicys_ERPModuleModule",
-      "ProjectPolicys_FinancesModule",
-      "ProjectPolicys_OffersModule",
-      "ProjectPolicys_PaymentModule",
-      "ProjectPolicys_ProductModule",
-    ],
-    company: {
-      companyId: 1,
-      name: "Meama-HQ",
-      color: null,
-      inherits: false,
-    },
-  },
-];
-
-export const userClaims = [
-  "ProjectPolicys_HomeModule",
-
-  "ProjectPolicys_ERPModuleModule",
-  "ProjectPolicys_FinancesModule",
-  "ProjectPolicys_OffersModule",
-  "ProjectPolicys_PaymentModule",
-  "ProjectPolicys_CoreModule",
-  "ProjectPolicys_B2BHoreka",
-  "ProjectPolicys_ProductModule",
-  // "ProjectPolicys_ECommerceModule",
-  "ProjectPolicys_ECommerceModule_ProductPage_Get",
-  // "ProjectPolicys_ECommerceModule_ProductPage_Add",
-  "ProjectPolicys_CustomersModule_CustomerPage_donwlaod",
-  // "ProjectPolicys_CustomersModule_CustomerPage",
-  "ProjectPolicys_CustomersModule_CustomerPage_Get",
-  "ProjectPolicys_CustomersModule_CustomerPage_Add",
-  "ProjectPolicys_CustomersModule_CustomerPage_Remove",
-
-  "ProjectPolicys_CustomersModule_CustomerSubPage_Add",
-  "ProjectPolicys_CustomersModule_CustomerSubPage_Get",
-  "ProjectPolicys_CustomersModule_CustomerSub2Page_Get",
-  // "ProjectPolicys_CustomersModule_CustomerSubPage",
-  // "ProjectPolicys_CustomersModule_CustomerPage_Update",
-];
+};

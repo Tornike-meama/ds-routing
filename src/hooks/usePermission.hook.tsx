@@ -1,37 +1,24 @@
-import React, { useContext } from "react";
+import { useClaimns } from "./useClaims.hook";
 import {
-  // PermissionContextType,
   UserPermissionReturnType,
   Actions,
   Acceseses,
 } from "types";
 
-import { PermissionsContext } from "context";
-// export const PermissionsContext = createContext<PermissionContextType>({
-//   userClaims: [],
-// });
-
 export function usePersmissions(
   moduleKey?: string,
   pageKeys?: Acceseses
 ): UserPermissionReturnType {
-  let userClaims: string[] = [];
-  if(useContext !== null) userClaims = useContext(PermissionsContext)?.userClaims;
-  console.log(userClaims, "userClaims from usepermission");
+  const userClaims = useClaimns();
   let actions = {} as Actions;
 
   if (!pageKeys || !moduleKey) {
     return { actions, userClaims };
   }
 
-  const hasPageAccess = userClaims.some(
-    (key: string) => key === moduleKey || key === pageKeys.pageKey
-  );
-  Object.getOwnPropertyNames(pageKeys).forEach(
-    (key) =>
-      (actions[key] = hasPageAccess || userClaims.includes(pageKeys[key]))
-  );
+  const hasPageAccess = userClaims.some((key: string) => key === moduleKey || key === pageKeys.pageKey);
+  Object
+    .getOwnPropertyNames(pageKeys)
+    .forEach((key) => (actions[key] = hasPageAccess || userClaims.includes(pageKeys[key])));
   return { actions, userClaims };
-}
-
-export default usePersmissions;
+};
