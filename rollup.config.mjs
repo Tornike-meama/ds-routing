@@ -16,8 +16,9 @@ export default [
         sourcemap: true,
       },
       {
-        file: packageJson.module,
-        format: "esm",
+        file: packageJson.main,
+        format: "cjs",
+        export: "named",
         sourcemap: true,
       },
     ],
