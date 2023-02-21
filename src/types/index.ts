@@ -2,13 +2,14 @@ export type {
   PermissionContextType,
   UserPermissionReturnType,
   Actions,
+  ActionByPageKey
 } from "./permission.types";
 export type {
   Acceseses,
   DrawerItem,
-  DrawerRoutes,
   Modules,
   PageRoutes,
   RoutesType,
+  InitRouterReturnType
 } from "./route.types";
-export type { PrivteRouteProps } from "./wrapper.types";
+export type { PrivteRouteProps, UnAuthorizedRouteProps } from "./wrapper.types";

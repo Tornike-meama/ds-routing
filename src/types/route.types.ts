@@ -1,3 +1,5 @@
+import { ActionByPageKey } from "./permission.types";
+
 export type DrawerItem = {
   name: string;
   to?: string;
@@ -9,11 +11,6 @@ export type RoutesType = {
   moduleKey: string;
   pageKeys: Acceseses;
   Component: () => JSX.Element;
-};
-
-export type DrawerRoutes = {
-  drawer: DrawerItem[];
-  routes: RoutesType[];
 };
 
 export type Acceseses = Record<string, string> & {
@@ -40,3 +37,8 @@ export type Modules = {
   subPages: PageRoutes[];
 };
 
+export type InitRouterReturnType = {
+  drawerItems: DrawerItem[];
+  routes: RoutesType[],
+  actions: ActionByPageKey;
+}

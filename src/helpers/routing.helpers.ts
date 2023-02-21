@@ -1,106 +1,80 @@
-import { DrawerItem, DrawerRoutes, Modules, PageRoutes, RoutesType } from "../types";
-import { generateValidUrlFromName } from './common.helpers';
+import { ActionByPageKey, DrawerItem, InitRouterReturnType, Modules, PageRoutes, RoutesType } from "types";
+import { getAccassesByModuleOrPageKeys, getValidUrl } from "./common.helpers";
 
-//routes
-export function getRoutes(allModule: Modules[]) {
-  return allModule.flatMap((module) =>
-    getRoutesrecursion(module.subPages, module.name, module.moduleKey)
-  );
-}
-
-function getRoutesrecursion(
-  pages: PageRoutes[],
-  baseUrl: string,
-  moduleKey: string
-): RoutesType[] {
-  let arr: RoutesType[] = [];
-  
-  pages.forEach((page: PageRoutes) => {
-    if (!page.component) {
-      arr.push(
-        ...getRoutesrecursion(
-          page.subPages ?? [],
-          `${generateValidUrlFromName(baseUrl)}/${page.url || generateValidUrlFromName(page.name)}`,
-          page.pageKeys.pageKey
-        )
-      );
-    } else {
-      const route = {
-        to: `${generateValidUrlFromName(baseUrl)}/${page.url || generateValidUrlFromName(page.name)}`,
-        moduleKey: moduleKey,
-        pageKeys: page.pageKeys,
-        Component: page.component,
-      };
-      arr.push(route);
-      if (page.subPages?.length) {
-        arr.push(
-          ...getRoutesrecursion(page.subPages, route.to, page.pageKeys.pageKey)
-        );
-      }
-    }
-    
-  });
-  return arr;
-}
-
-//drawer
-export function getDrawerItems(claims: string[], allModule: Modules[]) {
+//init router method which run first when applicaition load
+export function initRouter(claims: string[], allModule: Modules[]): InitRouterReturnType {
   //loop all module
-  const drawerItems = allModule.reduce<DrawerItem[]>((acc, module) => {
+  let allActions = {};
+  let allRoutes: RoutesType[] = [];
+  const allDrawerItems = allModule.reduce<DrawerItem[]>((acc, module) => {
+    let accassesAndDrawitems = getDrawerItemrecursion(module.subPages, module.moduleKey, `/${module.name}`, claims, allActions, allRoutes);
+    //add actions and routes in main array
+    allActions = {...allActions, ...accassesAndDrawitems.actions};
+    allRoutes.push(...accassesAndDrawitems.routes);
+    //if don't want show module in drawer
     if (!module.showDrawer) return acc;
 
-    //initilize module fro drawer
+    //initilize module for drawer
     let moduleItem = {
       name: module.name,
       to: undefined,
-      childItems: [],
-    } as DrawerItem;
+      childItems: accassesAndDrawitems.drawerItems ?? [],
+    };
 
-    //check user access for full module
-    moduleItem.childItems = getDrawerItemrecursion(module.subPages, module.moduleKey, `/${module.name}`, claims);
     //if user haven't access full module or any page inside this module not showing in drawer
-    if(moduleItem.childItems?.length > 0) acc.push(moduleItem); //TODO: make this better
+    if(moduleItem.childItems.length > 0) acc.push(moduleItem); //TODO: make this better
     return acc;
   }, []);
 
-  return drawerItems;
+  return {actions: allActions, routes: allRoutes, drawerItems: allDrawerItems};
 }
 
+//recursion modules and subpages tree
 function getDrawerItemrecursion(
   pages: PageRoutes[],
   moduleKey: string,
   prevUrl: string,
-  claims: string[]
-): DrawerItem[] {
-  return pages.reduce<DrawerItem[]>((acc, page) => {
-    //check if user have access full page or access get action and check show in drawer
-    if (claims.some((key) => key === moduleKey || key === page.pageKeys.pageKey || key === page.pageKeys.get) && page.showDrawer ) {
+  claims: string[],
+  allActions: ActionByPageKey,
+  routes: RoutesType[],
+): InitRouterReturnType {
+
+  const drawItems = pages.reduce<InitRouterReturnType>((acc: InitRouterReturnType, page: PageRoutes) => {
+    const actions = getAccassesByModuleOrPageKeys(moduleKey, page.pageKeys, claims)
+    acc.actions = {...acc.actions, ...actions}
+    //check if user have moduleKey, pagekey or access get action and check show in drawer
+    if (claims.some((key) => key === moduleKey || key === page.pageKeys.pageKey || key === page.pageKeys.get)) {
+      //drawer items
       let subPageItem = {
         name: page.name,
-        to: page.url ? `${prevUrl}/${page.url}` : null,
+        to: getValidUrl(prevUrl, page.url), // page.url ? `${prevUrl}/${page.url}` : null,
         childItems: [],
       } as DrawerItem;
 
-      //recursion pages if have sub pages
-      if (page.subPages !== undefined && page.subPages?.length > 0) {
-        subPageItem.childItems = getDrawerItemrecursion(
-          page.subPages,
-          moduleKey,
-          subPageItem.to ?? `${prevUrl}/${page.name.split(" ").join("")}`,
-          claims
-        );
+      //current router url which is for routes and drawer
+      const currentUrl = subPageItem.to ?? `${prevUrl}/${page.name.split(" ").join("")}`;
+
+      //push routes in recursion routes arr
+      if (page.component) {
+        routes.push({to: currentUrl, moduleKey: moduleKey, pageKeys: page.pageKeys, Component: page.component});
       };
 
-      acc.push(subPageItem);
-    };
-     
+      //if this item must in drawer
+      if(page.showDrawer) {
+        //recursion pages if have sub pages
+        if (page.subPages !== undefined && page.subPages?.length > 0) {
+          const subactions = getDrawerItemrecursion(page.subPages, moduleKey, currentUrl, claims, allActions, routes);
+          subPageItem.childItems = subactions.drawerItems;
+          acc.actions = {...acc.actions, ...subactions.actions}
+        };
+  
+        //finally when all item in tree and if this item must in drawer add in acc draweritems tree
+        acc.drawerItems.push(subPageItem);
+      };
+    }
+    
     return acc;
-  }, []);
-}
+  }, {drawerItems: [], actions: {}, routes: [] });
 
-//get drawer items and routes 
-export function getDrawerRoutes(claims: string[], allModule: Modules[]): DrawerRoutes {
-  const routes = getRoutes(allModule);
-  const drawer = getDrawerItems(claims, allModule);
-  return { routes, drawer };
+  return drawItems;
 };

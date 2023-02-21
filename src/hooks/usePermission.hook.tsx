@@ -1,24 +1,11 @@
-import { useClaimns } from "./useClaims.hook";
-import {
-  UserPermissionReturnType,
-  Actions,
-  Acceseses,
-} from "types";
+import { useClaimns, useUserActions } from "./useClaims.hook";
+import { UserPermissionReturnType } from "types";
 
 export function usePersmissions(
-  moduleKey?: string,
-  pageKeys?: Acceseses
+  pageKey?: string
 ): UserPermissionReturnType {
   const userClaims = useClaimns();
-  let actions = {} as Actions;
+  const actionsByKey = useUserActions();
 
-  if (!pageKeys || !moduleKey) {
-    return { actions, userClaims };
-  }
-
-  const hasPageAccess = userClaims.some((key: string) => key === moduleKey || key === pageKeys.pageKey);
-  Object
-    .getOwnPropertyNames(pageKeys)
-    .forEach((key) => (actions[key] = hasPageAccess || userClaims.includes(pageKeys[key])));
-  return { actions, userClaims };
+  return  { actions: (pageKey && actionsByKey[pageKey]) ? actionsByKey[pageKey] : {}, userClaims };
 };
