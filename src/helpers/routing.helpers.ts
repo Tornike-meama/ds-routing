@@ -38,7 +38,6 @@ function getRouter(
   allActions: ActionByPageKey,
   routes: RoutesType[],
 ): InitRouterReturnType {
-console.log("object");
   const drawItems = pages.reduce<InitRouterReturnType>((acc: InitRouterReturnType, page: PageRoutes) => {
     const actions = getAccassesByModuleOrPageKeys(moduleKey, page.pageKeys, claims)
     acc.actions = {...acc.actions, ...actions}
@@ -59,18 +58,17 @@ console.log("object");
         routes.push({to: currentUrl, moduleKey: moduleKey, pageKeys: page.pageKeys, Component: page.component});
       };
 
-      //if this item must in drawer
-      if(page.showDrawer) {
-        //recursion pages if have sub pages
-        if (page.subPages !== undefined && page.subPages?.length > 0) {
-          const subactions = getRouter(page.subPages, moduleKey, currentUrl, claims, allActions, routes);
-          subPageItem.childItems = subactions.drawerItems;
-          acc.actions = {...acc.actions, ...subactions.actions}
-        };
-  
-        //finally when all item in tree and if this item must in drawer add in acc draweritems tree
-        acc.drawerItems.push(subPageItem);
+      //recursion pages if have sub pages
+      if (page.subPages !== undefined && page.subPages?.length > 0) {
+        const subactions = getRouter(page.subPages, moduleKey, currentUrl, claims, allActions, routes);
+        subPageItem.childItems = subactions.drawerItems;
+        acc.actions = {...acc.actions, ...subactions.actions}
       };
+  
+      //if this item must in drawer finally push in drawer items tree arr
+      if(page.showDrawer) {
+        acc.drawerItems.push(subPageItem);
+      }
     }
     
     return acc;

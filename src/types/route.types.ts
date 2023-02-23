@@ -25,7 +25,7 @@ export type PageRoutes = {
   pageKeys: Acceseses;
   url: string;
   name: string;
-  showDrawer: boolean;
+  showDrawer?: boolean;
   subPages?: PageRoutes[];
   component: (() => JSX.Element) | null;
 };
@@ -33,7 +33,7 @@ export type PageRoutes = {
 export type Modules = {
   moduleKey: string;
   name: string;
-  showDrawer: boolean;
+  showDrawer?: boolean;
   subPages: PageRoutes[];
 };
 
