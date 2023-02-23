@@ -7,7 +7,7 @@ export function initRouter(claims: string[], allModule: Modules[]): InitRouterRe
   let allActions = {};
   let allRoutes: RoutesType[] = [];
   const allDrawerItems = allModule.reduce<DrawerItem[]>((acc, module) => {
-    let accassesAndDrawitems = getDrawerItemrecursion(module.subPages, module.moduleKey, `/${module.name}`, claims, allActions, allRoutes);
+    let accassesAndDrawitems = getRouter(module.subPages, module.moduleKey, `/${module.name}`, claims, allActions, allRoutes);
     //add actions and routes in main array
     allActions = {...allActions, ...accassesAndDrawitems.actions};
     allRoutes.push(...accassesAndDrawitems.routes);
@@ -30,7 +30,7 @@ export function initRouter(claims: string[], allModule: Modules[]): InitRouterRe
 }
 
 //recursion modules and subpages tree
-function getDrawerItemrecursion(
+function getRouter(
   pages: PageRoutes[],
   moduleKey: string,
   prevUrl: string,
@@ -38,7 +38,7 @@ function getDrawerItemrecursion(
   allActions: ActionByPageKey,
   routes: RoutesType[],
 ): InitRouterReturnType {
-
+console.log("object");
   const drawItems = pages.reduce<InitRouterReturnType>((acc: InitRouterReturnType, page: PageRoutes) => {
     const actions = getAccassesByModuleOrPageKeys(moduleKey, page.pageKeys, claims)
     acc.actions = {...acc.actions, ...actions}
@@ -63,7 +63,7 @@ function getDrawerItemrecursion(
       if(page.showDrawer) {
         //recursion pages if have sub pages
         if (page.subPages !== undefined && page.subPages?.length > 0) {
-          const subactions = getDrawerItemrecursion(page.subPages, moduleKey, currentUrl, claims, allActions, routes);
+          const subactions = getRouter(page.subPages, moduleKey, currentUrl, claims, allActions, routes);
           subPageItem.childItems = subactions.drawerItems;
           acc.actions = {...acc.actions, ...subactions.actions}
         };
