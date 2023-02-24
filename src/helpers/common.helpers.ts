@@ -14,7 +14,7 @@ export function getAccassesByModuleOrPageKeys(moduleKey: string, pageKeys: Acces
     .getOwnPropertyNames(pageKeys)
     .forEach((key) => {
       actionsByPageKey[pageKeys.pageKey] = 
-        {...actionsByPageKey[pageKeys.pageKey],[key]: userClaims.some((accasessKey) => pageKeys[key] === moduleKey || pageKeys?.pageKey === accasessKey || pageKeys[key] === accasessKey)}
+        {...actionsByPageKey[pageKeys.pageKey],[key]: userClaims.some((accasessKey) => moduleKey === accasessKey || pageKeys?.pageKey === accasessKey || pageKeys[key] === accasessKey)}
     });
   return actionsByPageKey;
 };
