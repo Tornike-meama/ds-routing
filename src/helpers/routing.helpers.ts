@@ -1,32 +1,32 @@
-import { ActionByPageKey, DrawerItem, InitRouterReturnType, Modules, PageRoutes, RoutesType } from "types";
-import { getAccassesByModuleOrPageKeys, getValidUrl } from "./common.helpers";
+import { ActionByPageKey, DrawerItem, InitRouterReturnType, Modules, PageRoutes } from "types";
+import { RoutesByAccasable } from "types/route.types";
+import { getAccassesByModuleOrPageKeys, getValidUrl, isAuthorizedPublicRoute, isAuthorizedPublicOrUnAuthorized, isUnAuthorizedRoute } from "./common.helpers";
 
 //init router method which run first when applicaition load
 export function initRouter(claims: string[], allModule: Modules[]): InitRouterReturnType {
-  //loop all module
+  //initilize empty return routes and actons
   let allActions = {};
-  let allRoutes: RoutesType[] = [];
-  const allDrawerItems = allModule.reduce<DrawerItem[]>((acc, module) => {
-    let accassesAndDrawitems = getRouter(module.subPages, module.moduleKey, `/${module.name}`, claims, allActions, allRoutes);
+  let routes: RoutesByAccasable = {privateRoutes: [], authorizedPublicRoutes: [], unAuthorizedRoutes: []};
+  //loop all module and get router 
+  const drawerItems = allModule.reduce<DrawerItem[]>((acc, module) => {
+    let currentRouter = getRouter(module.subPages, module.moduleKey, `${module.name}`, claims, allActions, routes);
     //add actions and routes in main array
-    allActions = {...allActions, ...accassesAndDrawitems.actions};
-    allRoutes.push(...accassesAndDrawitems.routes);
-    //if don't want show module in drawer
-    if (!module.showDrawer) return acc;
+    allActions = {...allActions, ...currentRouter.actions};
+    routes.privateRoutes.push(...currentRouter.routes.privateRoutes);
 
     //initilize module for drawer
     let moduleItem = {
       name: module.name,
       to: undefined,
-      childItems: accassesAndDrawitems.drawerItems ?? [],
+      childItems: currentRouter.drawerItems ?? [],
     };
 
-    //if user haven't access full module or any page inside this module not showing in drawer
-    if(moduleItem.childItems.length > 0) acc.push(moduleItem); //TODO: make this better
+    //if not showing in drawer or user haven't access full module or any page inside this module not showing in drawer
+    if(moduleItem.childItems.length > 0 || !module.showDrawer) acc.push(moduleItem); //TODO: make this better
     return acc;
   }, []);
 
-  return {actions: allActions, routes: allRoutes, drawerItems: allDrawerItems};
+  return {actions: allActions, routes, drawerItems};
 }
 
 //recursion modules and subpages tree
@@ -36,26 +36,33 @@ function getRouter(
   prevUrl: string,
   claims: string[],
   allActions: ActionByPageKey,
-  routes: RoutesType[],
+  routes: RoutesByAccasable,
 ): InitRouterReturnType {
   const drawItems = pages.reduce<InitRouterReturnType>((acc: InitRouterReturnType, page: PageRoutes) => {
     const actions = getAccassesByModuleOrPageKeys(moduleKey, page.pageKeys, claims)
     acc.actions = {...acc.actions, ...actions}
     //check if user have moduleKey, pagekey or access get action and check show in drawer
-    if (claims.some((key) => key === moduleKey || key === page.pageKeys.pageKey || key === page.pageKeys.get)) {
+    if (claims.some((key) => key === moduleKey || key === page.pageKeys.pageKey || key === page.pageKeys.get) || isAuthorizedPublicOrUnAuthorized(page.pageKeys.pageKey)) {
       //drawer items
-      let subPageItem = {
+      let subPageItem: DrawerItem = {
         name: page.name,
         to: getValidUrl(prevUrl, page.url), // page.url ? `${prevUrl}/${page.url}` : null,
         childItems: [],
-      } as DrawerItem;
+      };
 
       //current router url which is for routes and drawer
-      const currentUrl = subPageItem.to ?? `${prevUrl}/${page.name.split(" ").join("")}`;
+      const currentUrl = subPageItem.to || `${prevUrl}/${page.name.split(" ").join("")}`;
 
-      //push routes in recursion routes arr
+      //add route in arr if have component this route
       if (page.component) {
-        routes.push({to: currentUrl, moduleKey: moduleKey, pageKeys: page.pageKeys, Component: page.component});
+        const currentRoute = {to: currentUrl, moduleKey: moduleKey, pageKeys: page.pageKeys, Component: page.component};
+        if(isUnAuthorizedRoute(page.pageKeys.pageKey)) {
+          routes.unAuthorizedRoutes.push(currentRoute)
+        } else if(isAuthorizedPublicRoute(page.pageKeys.pageKey)) {
+          routes.authorizedPublicRoutes.push(currentRoute)
+        } else {
+          routes.privateRoutes.push(currentRoute);
+        }
       };
 
       //recursion pages if have sub pages
@@ -72,7 +79,7 @@ function getRouter(
     }
     
     return acc;
-  }, {drawerItems: [], actions: {}, routes: [] });
+  }, {drawerItems: [], actions: {}, routes: {privateRoutes: [], unAuthorizedRoutes: [], authorizedPublicRoutes: []} });
 
   return drawItems;
 };

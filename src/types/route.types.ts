@@ -37,8 +37,14 @@ export type Modules = {
   subPages: PageRoutes[];
 };
 
+export type RoutesByAccasable = {
+  privateRoutes: RoutesType[],
+  unAuthorizedRoutes: RoutesType[],
+  authorizedPublicRoutes: RoutesType[],
+}
+
 export type InitRouterReturnType = {
   drawerItems: DrawerItem[];
-  routes: RoutesType[],
+  routes: RoutesByAccasable,
   actions: ActionByPageKey;
 }

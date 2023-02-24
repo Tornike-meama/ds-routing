@@ -1,10 +1,11 @@
 import { Acceseses } from "types";
+import { UnAuthorizedKey, AuthorizedPublicKey } from './../constants/routes.constatnt';
 
 export const getValidUrl = (prevUrl: string, pageUrl: string) =>{
   if(prevUrl === "/") {
     return prevUrl
   }
-  return pageUrl ? `${prevUrl}/${pageUrl}` : null;
+  return pageUrl ? `${prevUrl}/${pageUrl}` : pageUrl;
 };
 
 export function getAccassesByModuleOrPageKeys(moduleKey: string, pageKeys: Acceseses, userClaims: string[]) {
@@ -16,4 +17,16 @@ export function getAccassesByModuleOrPageKeys(moduleKey: string, pageKeys: Acces
         {...actionsByPageKey[pageKeys.pageKey],[key]: userClaims.some((accasessKey) => pageKeys[key] === moduleKey || pageKeys?.pageKey === accasessKey || pageKeys[key] === accasessKey)}
     });
   return actionsByPageKey;
+};
+
+export function isUnAuthorizedRoute(key: string) {
+  return key === UnAuthorizedKey;
+};
+
+export function isAuthorizedPublicRoute(key: string) {
+  return key === AuthorizedPublicKey;
+};
+
+export function isAuthorizedPublicOrUnAuthorized(key: string) {
+  return isUnAuthorizedRoute(key) || isAuthorizedPublicRoute(key);
 };
