@@ -27,6 +27,6 @@ export function isAuthorizedPublicRoute(key: string) {
   return key === AuthorizedPublicKey;
 };
 
-export function isAuthorizedPublicOrUnAuthorized(key: string) {
+export function isAuthorizedPublicOrUnAuthorizedRoute(key: string) {
   return isUnAuthorizedRoute(key) || isAuthorizedPublicRoute(key);
 };

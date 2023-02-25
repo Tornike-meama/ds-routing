@@ -1,6 +1,6 @@
 import { ActionByPageKey, DrawerItem, InitRouterReturnType, Modules, PageRoutes } from "types";
 import { RoutesByAccasable } from "types/route.types";
-import { getAccassesByModuleOrPageKeys, getValidUrl, isAuthorizedPublicRoute, isAuthorizedPublicOrUnAuthorized, isUnAuthorizedRoute } from "./common.helpers";
+import { getAccassesByModuleOrPageKeys, getValidUrl, isAuthorizedPublicRoute, isAuthorizedPublicOrUnAuthorizedRoute, isUnAuthorizedRoute } from "./common.helpers";
 
 //init router method which run first when applicaition load
 export function initRouter(claims: string[], allModule: Modules[]): InitRouterReturnType {
@@ -42,7 +42,7 @@ function getRouter(
     const actions = getAccassesByModuleOrPageKeys(moduleKey, page.pageKeys, claims)
     acc.actions = {...acc.actions, ...actions}
     //check if user have moduleKey, pagekey or access get action and check show in drawer
-    if (claims.some((key) => key === moduleKey || key === page.pageKeys.pageKey || key === page.pageKeys.get) || isAuthorizedPublicOrUnAuthorized(page.pageKeys.pageKey)) {
+    if (claims.some((key) => key === moduleKey || key === page.pageKeys.pageKey || key === page.pageKeys.get) || isAuthorizedPublicOrUnAuthorizedRoute(page.pageKeys.pageKey)) {
       //drawer items
       let subPageItem: DrawerItem = {
         name: page.name,
