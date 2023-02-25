@@ -9,7 +9,6 @@ export type PrivteRouteProps = {
 
 export type UnAuthorizedRouteProps = {
   component: ReactNode;
-  homePageComponent: ReactNode;
   redirectToHome: () => void;
   isLogedIn: boolean;
 };
