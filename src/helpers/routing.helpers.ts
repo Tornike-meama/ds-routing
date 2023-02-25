@@ -22,7 +22,7 @@ export function initRouter(claims: string[], allModule: Modules[]): InitRouterRe
     };
 
     //if not showing in drawer or user haven't access full module or any page inside this module not showing in drawer
-    if(moduleItem.childItems.length > 0 || !module.showDrawer) acc.push(moduleItem); //TODO: make this better
+    if(moduleItem.childItems.length > 0 && module.showDrawer) acc.push(moduleItem); //TODO: make this better
     return acc;
   }, []);
 
@@ -73,7 +73,7 @@ function getRouter(
       };
   
       //if this item must in drawer finally push in drawer items tree arr
-      if(page.showDrawer) {
+      if(page.showDrawer && (subPageItem.childItems?.length || page.component)) {
         acc.drawerItems.push(subPageItem);
       }
     }
